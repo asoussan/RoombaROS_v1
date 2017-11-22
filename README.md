@@ -19,8 +19,29 @@ The following hardware is used: An iRobot Create2
 A Raspberry Pi3 w/ Unbuntu 16.04 and ROS Kinetic installed.
 
 To download to a Raspberry Pi follow the below command line
-steps
+steps. This will initialize a workspace called irobot
+for Roomba ROS packages
+```
+mkdir ~/irobot/src
+cd ~/irobot/src
+catkin_init_workspace
+cd ..
+catkin_make
 
+cd ~/irobot/src
+git clone https://github.com/spm1200/RoombaROS_v1
+cd ~/irobot
+rosdep update
+rosdep install --from-paths src -i -y
+catkin_make
+source ./develop/setup.bash
+```
+
+To ensure the USB connection will work on the Pi
+run the below command
+```
+sudo usermod -a -G dialout $USER
+```
 
 To run the ROS package, three terminal windows are needed.
 Run the commands shown for each 3 below.
@@ -37,5 +58,16 @@ Terminal 2 [run publisher]:
 export ROS_MASTER_URI=http://[pi_ip_address]:11311
 export ROS_IP=[pi_ip_address]
 source develop/setup.bash
-rosrun ca_driver  rangestate.py
+rosrun RoombaROS_v1  rangestate.py
 ```
+
+Terminal 3 [run subscriber]:
+```
+export ROS_MASTER_URI=http://[pi_ip_address]:11311
+export ROS_IP=[pi_ip_address]
+source develop/setup.bash
+rosrun RoombaROS_v1  listener.py
+```
+
+From here, the 6IR sensor states and 
+wheel velocities will be displayed.
